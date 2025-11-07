@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  namespace: ns-dev-environment
+  labels:
+    app: webapp
+    tier: frontend
+    env: dev
+  annotations:
+    description: "Frontend deployment for the backend development environment"
+    owner: "santoshmohanty2511@gmail.com"
+
+spec:
+  # Number of pod replicas
+  replicas: 3
+
+  # Deployment strategy
+  strategy:
+    type: RollingUpdate   # Options: RollingUpdate / Recreate
+    rollingUpdate:
+      maxSurge: 1         # how many new pods above desired count
+      maxUnavailable: 1   # how many pods can be unavailable during update
+
+  # Selector - must match Pod labels
+  selector:
+    matchLabels:
+      app: webapp
+      tier: frontend
+
+  # Template section defines the Pod spec (like kind: Pod)
+  template:
+    metadata:
+      labels:
+        app: webapp
+        tier: frontend
+        env: dev
+      annotations:
+        buildVersion: "v1.0.0"
+    spec:
+      # Node placement control
+      nodeSelector:
+        kubernetes.io/hostname: worker1
+
+      # Service account if needed
+      serviceAccountName: default
+
+      # Restart policy is always 'Always' in deployments
+      restartPolicy: Always
+
+      containers:
+        - name: nginx-container
+          image: nginx:1.25
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+
+          env:
+            - name: APP_ENV
+              value: "development"
+            - name: BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: backend_url
+            - name: SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: token
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          volumeMounts:
+            - name: web-content
+              mountPath: /usr/share/nginx/html
+
+      # Sidecar container (optional)
+        - name: logger
+          image: busybox
+          command: ["sh", "-c", "tail -f /var/log/nginx/access.log"]
+          volumeMounts:
+          - name: web-content
+            mountPath: /var/log/nginx
+
+      volumes:
+        - name: web-content
+          emptyDir: {}
+
+      # Tolerations and affinity
+      tolerations:
+        - key: "env"
+          operator: "Equal"
+          value: "dev"
+          effect: "NoSchedule"
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - worker1

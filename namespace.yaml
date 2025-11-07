@@ -1,0 +1,13 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ns-dev-environment
+  labels:
+    purpose: development
+    team: backend
+  annotations:
+    description: "Namespace for backend team development workloads"
+    owner: "santoshmohanty2511@gmail.com"
+spec:
+  finalizers:
+    - kubernetes

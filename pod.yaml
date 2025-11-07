@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webapp-pod
+  namespace: ns-dev-environment
+  labels:
+    app: webapp
+    tier: frontend
+    env: dev
+  annotations:
+    description: "Pod running frontend web application"
+    owner: "santoshmohanty2511@gmail.com"
+
+spec:
+  # Defines which node to schedule this Pod on
+  nodeSelector:
+    kubernetes.io/hostname: mycluster-worker2
+
+  # Restart policy: Always | OnFailure | Never
+  restartPolicy: Always
+
+  # Optional: ServiceAccount if RBAC is used
+  serviceAccountName: default
+
+  # Containers running inside this Pod
+  containers:
+    - name: nginx-container-pod
+      image: nginx:1.25
+      imagePullPolicy: IfNotPresent
+
+      # Ports exposed by this container
+      ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+
+      # Environment variables
+      env:
+        - name: APP_ENV
+          value: "development"
+        - name: BACKEND_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: backend_url
+
+      # Resource requests and limits
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+        limits:
+          cpu: "250m"
+          memory: "256Mi"
+
+      # Liveness and Readiness Probes
+      livenessProbe:
+        httpGet:
+          path: /
+          port: 80
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        failureThreshold: 3
+
+      readinessProbe:
+        httpGet:
+          path: /
+          port: 80
+        initialDelaySeconds: 5
+        periodSeconds: 5
+
+      # Volume mounts inside container
+      volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+
+    - name: sidecar-logger
+      image: busybox
+      command: ["sh", "-c", "tail -f /var/log/nginx/access.log"]
+      volumeMounts:
+        - name: html-volume
+          mountPath: /var/log/nginx
+
+  # Volumes shared by containers in the Pod
+  volumes:
+    - name: html-volume
+      emptyDir: {}
+
+  # Optional: Tolerations and Affinity (for scheduling rules)
+  tolerations:
+    - key: "env"
+      operator: "Equal"
+      value: "dev"
+      effect: "NoSchedule"
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - mycluster-worker2
