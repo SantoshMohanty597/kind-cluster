@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: log-cleanup-cronjob
+  namespace: maintenance
+  labels:
+    app: log-cleaner
+  annotations:
+    description: "Deletes old logs every night and stores cleanup report"
+spec:
+  schedule: "0 2 * * *"      # Run daily at 2 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  startingDeadlineSeconds: 300
+
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      ttlSecondsAfterFinished: 1800
+      template:
+        metadata:
+          labels:
+            app: log-cleaner
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: cleanup
+            image: busybox:latest
+            command:
+              - sh
+              - -c
+              - |
+                echo "Starting cleanup at $(date)" >> /data/cleanup.log
+                find /data/logs -type f -mtime +7 -delete
+                echo "Cleanup completed at $(date)" >> /data/cleanup.log
+            volumeMounts:
+            - name: logs-storage
+              mountPath: /data
+            resources:
+              requests:
+                cpu: "100m"
+                memory: "128Mi"
+              limits:
+                cpu: "200m"
+                memory: "256Mi"
+
+          # Volume section
+          volumes:
+          - name: logs-storage
+            persistentVolumeClaim:
+              claimName: logs-pvc

@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-backup-job
+  namespace: operations
+  labels:
+    app: database-backup
+  annotations:
+    description: "Performs a one-time database backup and stores it on a persistent volume"
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 3600
+
+  template:
+    metadata:
+      labels:
+        app: database-backup
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: backup-container
+        image: busybox:latest
+        command: ["sh", "-c", "echo Starting backup... && echo 'Backup data' > /backup/db-backup.txt && sleep 10 && echo Backup complete!"]
+        volumeMounts:
+        - name: backup-storage
+          mountPath: /backup                # Mount path inside container
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+
+      # Volume Section
+      volumes:
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: db-backup-pvc          # Reference to existing PVC
