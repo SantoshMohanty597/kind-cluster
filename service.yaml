@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+  namespace: dv
+  labels:
+    app: webapp
+    tier: frontend
+  annotations:
+    description: "Service exposing webapp Deployment internally"
+spec:
+  selector:
+    app: webapp          # Must match the labels of the Pods it routes traffic to
+  type: ClusterIP         # Types: ClusterIP, NodePort, LoadBalancer, ExternalName
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80            # Port exposed by the Service (inside cluster)
+      targetPort: 8080    # Pod containerPort (inside Pod)
