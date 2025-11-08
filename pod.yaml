@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: webapp-pod
+  name: webapp-pod-yaml
   namespace: ns-dev-environment
   labels:
     app: webapp
