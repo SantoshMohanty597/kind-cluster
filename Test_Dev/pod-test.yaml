@@ -1,8 +1,8 @@
-apiVersion: v2
+apiVersion: v1
 kind: Pod
 metadata:
   name: 1-m-pod-nginx
-  namespace: ns-dev-environment
+  namespace: dv
   labels:
     app: webapp
     tier: frontend
@@ -10,3 +10,15 @@ metadata:
   annotations:
     description: "Pod running frontend web application"
     owner: "santoshmohanty2511@gmail.com"
+spec:
+  restartPolicy: Always
+  containers:
+    - name: nginx-container-pod
+      image: nginx:1.25
+      imagePullPolicy: IfNotPresent
+
+      # Ports exposed by this container
+      ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
