@@ -1,7 +1,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: ns-dev-environment
+  name: dv
   labels:
     purpose: development
     team: backend

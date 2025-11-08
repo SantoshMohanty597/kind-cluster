@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: webapp-deployment
-  namespace: ns-dev-environment
+  namespace: dv
   labels:
     app: webapp
     tier: frontend
