@@ -1,0 +1,12 @@
+apiVersion: v2
+kind: Pod
+metadata:
+  name: 1-m-pod-nginx
+  namespace: ns-dev-environment
+  labels:
+    app: webapp
+    tier: frontend
+    env: dev
+  annotations:
+    description: "Pod running frontend web application"
+    owner: "santoshmohanty2511@gmail.com"
