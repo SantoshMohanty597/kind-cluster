@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: dep-pod
+  namespace: dv
+  labels:
+    app: webapp-dep
+    tier: frontend-dep
+    env: dev
+  annotations:
+    description: "Frontend deployment for the backend development environment"
+    owner: "santoshmohanty2511@gmail.com"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate   # Options: RollingUpdate / Recreate
+    rollingUpdate:
+      maxSurge: 1         # how many new pods above desired count
+      maxUnavailable: 1   # how many pods can be unavailable during update
+
+  # Selector - must match Pod labels
+  selector:
+    matchLabels:
+      app: webapp-dep-pod
+      tier: frontend-dep-pod
+
+  template:
+    metadata:
+      name: 1-m-pod-nginx
+      namespace: dv
+      labels:
+        app: webapp-dep-pod
+        tier: frontend-dep-pod
+        env: dev
+      annotations:
+        description: "Pod running frontend web application"
+        owner: "santoshmohanty2511@gmail.com"
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: nginx-dep-pod
+          image: nginx:1.25
+          imagePullPolicy: IfNotPresent
+
+          # Ports exposed by this container
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
