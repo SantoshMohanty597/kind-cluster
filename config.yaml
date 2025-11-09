@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-app-config
+  namespace: default
+data:
+  # plain-text key/value pairs
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+  DB_HOST: "mysql.internal.svc.cluster.local"
+  DB_PORT: "3306"
+  FEATURE_FLAG_NEW_UI: "true"

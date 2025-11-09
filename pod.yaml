@@ -39,8 +39,8 @@ spec:
         - name: APP_ENV
           value: "development"
         - name: BACKEND_URL
-          valueFrom:
-            configMapKeyRef:
+          valueFrom:               #### envfrom also can be use check one note
+            configMapKeyRef:       #### 1st way to assing the configmap and secret
               name: app-config
               key: backend_url
 
@@ -71,8 +71,11 @@ spec:
 
       # Volume mounts inside container
       volumeMounts:
-        - name: html-volume
+        - name: html-volume       ### From the PVC
           mountPath: /usr/share/nginx/html
+
+        - name: secret-volume     ### 2nd Way to assign config map or sceret
+          mountPath: /etc/secret
 
     - name: sidecar-logger
       image: busybox
