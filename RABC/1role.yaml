@@ -1,0 +1,10 @@
+## Role to allow reading Pods (limited permissions)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader              ## Role name
+  namespace: dev
+rules:
+- apiGroups: [""]               ## Core API group (pods, services)
+  resources: ["pods"]           ## Resources allowed
+  verbs: ["get", "list", "watch"]  ## Allowed actions

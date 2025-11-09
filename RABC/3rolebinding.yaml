@@ -1,0 +1,14 @@
+## Bind Role to our ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webapp-rolebinding
+  namespace: dev
+subjects:
+- kind: ServiceAccount          ## Binding for ServiceAccount
+  name: webapp-sa               ## The SA we created above
+  namespace: dev
+roleRef:
+  kind: Role
+  name: pod-reader              ## Connect to Role created above
+  apiGroup: rbac.authorization.k8s.io

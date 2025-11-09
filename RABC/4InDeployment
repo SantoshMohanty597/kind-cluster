@@ -1,0 +1,27 @@
+## Deployment using RollingUpdate strategy and custom ServiceAccount
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  namespace: dev
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate              ## Strategy type (RollingUpdate / Recreate)
+    rollingUpdate:
+      maxSurge: 1                    ## One extra Pod can be created during update
+      maxUnavailable: 1              ## One Pod can be unavailable during update
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      serviceAccountName: webapp-sa  ## Attach custom ServiceAccount
+      containers:
+      - name: webapp
+        image: nginx:latest          ## Example container image
+        ports:
+        - containerPort: 80
