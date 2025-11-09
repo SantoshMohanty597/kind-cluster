@@ -1,0 +1,19 @@
+## Allow Egress to Specific Database IP
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-db
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.10/32         ## Allow connection to this IP only
+    ports:
+    - protocol: TCP
+      port: 3306                   ## MySQL port
