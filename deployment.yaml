@@ -112,6 +112,8 @@ spec:
         - name: web-content
           emptyDir: {}
 
+         
+
       # Tolerations and affinity
       tolerations:
         - key: "env"

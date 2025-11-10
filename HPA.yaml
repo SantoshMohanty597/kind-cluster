@@ -1,4 +1,6 @@
 ### To use the Autoscaling you need a deployment first. First make deployment then apply Autoscaling
+### Learn Bottelneck -cpu , memory 
+### Load-gentrater to test the system
 
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
