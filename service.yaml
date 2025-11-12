@@ -11,9 +11,17 @@ metadata:
 spec:
   selector:
     app: webapp          # Must match the labels of the Pods it routes traffic to
+
   type: ClusterIP         # Types: ClusterIP, NodePort, LoadBalancer, ExternalName
   ports:
     - name: http
       protocol: TCP
       port: 80            # Port exposed by the Service (inside cluster)
-      targetPort: 8080    # Pod containerPort (inside Pod)
+      targetPort: 80    # Pod containerPort (inside Pod)
+
+    - name: https         ### used as reference to find this port if a 
+                          ### Used mainly by Kubernetes or tools like Ingress/NLB 
+                          ### when you have multiple ports in the same Service (e.g., http, https).
+      protocol: TCP
+      port: 443
+      targetPort: 8443

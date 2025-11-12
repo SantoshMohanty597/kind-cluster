@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet                 # Ensures a pod runs on every node
+metadata:
+  name: nginx-daemonset         # Name of the DaemonSet
+  namespace: default            # Namespace (optional)
+  labels:
+    app: nginx-daemon           # Label for identification
+spec:
+  selector:                     # Must match pod labels
+    matchLabels:
+      app: nginx-daemon
+  template:                     # Pod template
+    metadata:
+      labels:
+        app: nginx-daemon
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx:latest     # NGINX image
+        ports:
+        - containerPort: 80     # Expose port 80 inside the pod

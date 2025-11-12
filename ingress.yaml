@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     description: "Ingress for frontend web application"
 spec:
-  ingressClassName: nginx
+  ingressClassName: nginx   ### Which Controller to be used
   rules:
   - host: webapp.local     # DNS name (use /etc/hosts for local testing)
     http:
@@ -20,10 +20,13 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: webapp-service
+            name: webapp-service  ## Service Name
             port:
-              number: 80
-  tls:
-  - hosts:
+              number: 80    ## service port
+  tls:         ### Optional section for HTTPS configuration.
+  - hosts:     ### List of hostnames for which TLS (HTTPS) should be enabled.
     - webapp.local
-    secretName: webapp-tls-secret   # (optional, only for HTTPS)
+    secretName: webapp-tls-secret   # (optional, only for HTTPS) Refers to a Kubernetes Secret that stores:
+    
+    # The Ingress Controller uses this Secret to serve HTTPS traffic.
+    # Secret name, which gives your Ingress Controller the credentials it needs to handle HTTPS encryption.
