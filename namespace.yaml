@@ -1,13 +1,25 @@
-kind: Namespace
-apiVersion: v1
-metadata:
-  name: dv
-  labels:
-    purpose: development
-    team: backend
-  annotations:
-    description: "Namespace for backend team development workloads"
-    owner: "santoshmohanty2511@gmail.com"
-spec:
-  finalizers:
-    - kubernetes
+# namespace.yaml
+
+apiVersion: v1                         # API version for Namespace resource
+kind: Namespace                        # Resource type is Namespace
+metadata:                              # Metadata about this namespace
+  name: dev-environment                # The name of the namespace $$ _ not allowed
+  labels:                              # Labels for identification and filtering
+    environment: development           # Environment label for easy selection
+    team: backend                      # Label showing which team owns this namespace
+  annotations:                         # Extra information (non-identifying)
+    createdBy: "Santosh Mohanty"       # Annotation of creator name
+    purpose: "For Dev testing"         # Annotation for usage purpose
+
+spec:                                  # Specification of the namespace configuration
+  finalizers:                          # Finalizers are used to perform cleanup before deletion
+    - kubernetes                       # Ensures Kubernetes cleans up resources inside the namespace before it’s deleted
+
+
+
+###Labels are key-value pairs used for:
+
+##Filtering (kubectl get pods -l environment=dev)
+
+##Grouping (kubectl get all -l team=backend)
+

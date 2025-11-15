@@ -1,15 +1,38 @@
+### EBS -> PV -> PVC
+
+apiVersion: v1                       # API version for Kubernetes core objects
+kind: PersistentVolume               # We are creating a PersistentVolume (PV)
+metadata:
+  name: ebs-pv                       # Name of the PV
+spec:
+  capacity:
+    storage: 10Gi                    # Size of the volume
+  volumeMode: Filesystem / Block     # The volume will be mounted as a filesystem
+  accessModes:
+    - ReadWriteOnce                  # RWO = only one node can mount at a time (EBS requirement)# EBS supports only RWO
+  persistentVolumeReclaimPolicy: Retain   # PV should not be deleted when PVC is deleted
+  storageClassName: ebs-sc           # Must match StorageClass used by PVC
+  csi:
+    driver: ebs.csi.aws.com          # AWS EBS CSI driver
+    volumeHandle: vol-0abcd1234efgh5678   # EBS Volume ID (existing EBS volume)
+    fsType: ext4                     # Filesystem type for the volume
+
+---
+### if you are using kind then 
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: pv-example
   labels:
-    type: local
+    type: local                 # Indicates local storage
 spec:
   capacity:
     storage: 1Gi
+  volumeMode: Filesystem / Block   # Allowed types (use only one)
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce             # Only one node can use it
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual   ### this is used by PVC to check the Storage class
-  hostPath:
-    path: /mnt/data
+  storageClassName: manual      # Must match the PVC
+  hostPath:                     # <--- LOCAL NODE FOLDER
+    path: /mnt/data             # <--- THIS IS THE PATH ON WORKER NODE

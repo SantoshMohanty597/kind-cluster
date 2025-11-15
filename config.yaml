@@ -1,3 +1,5 @@
+### You can use in env of pod
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +12,8 @@ data:
   DB_HOST: "mysql.internal.svc.cluster.local"
   DB_PORT: "3306"
   FEATURE_FLAG_NEW_UI: "true"
+
+
+  #### use this as volume mount
+
+  
