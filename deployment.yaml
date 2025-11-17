@@ -59,18 +59,31 @@ spec:
               protocol: TCP
 
           env:
-            - name: APP_ENV
+            - name: APP_ENV    ## Create an environment variable inside the container
               value: "development"
-            - name: BACKEND_URL
+
+            - name: BACKEND_URL ## From ConfigMap
               valueFrom:
                 configMapKeyRef:
-                  name: app-config
-                  key: backend_url
-            - name: SECRET_TOKEN
+                  name: app-config   ## configMap Name ## more then one key
+            
+            - name: BACKEND_URL2 ## From ConfigMap Just for Single Key
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config2  ## configMap Name
+                  key: backend_url2   ## The specific key inside that ConfigMap
+
+            - name: SECRET_TOKEN_ID ## From Secret
               valueFrom:
                 secretKeyRef:
                   name: app-secrets
-                  key: token
+                  key: ID     ## Need To mention Seprate Id and password
+
+            - name: SECRET_TOKEN_PASSWORD ## From Secret
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: pasword ## check the item password
 
           resources:
             requests:
@@ -97,8 +110,15 @@ spec:
             periodSeconds: 5
 
           volumeMounts:
+
             - name: web-content
-              mountPath: /usr/share/nginx/html
+              mountPath: /usr/share/nginx/html\
+
+            - name: secret-volume
+              mountPath: /etc/secret
+
+            - name: my-PVC
+              mountPath:  /etc/secret 
 
       # Sidecar container (optional)
         - name: logger
@@ -111,6 +131,14 @@ spec:
       volumes:
         - name: web-content
           emptyDir: {}
+
+        - name: secret-volume
+          secret:
+            secretName: my-secret
+        
+        - name: pv-vl
+          persistentVolumeClaim:
+            claimName: my-PVC
 
          
 
@@ -130,3 +158,34 @@ spec:
                     operator: In
                     values:
                       - worker1
+
+
+
+
+# ✅ Mount one key as environment variable
+env:
+  - name: USER_ID
+    valueFrom:
+      secretKeyRef:
+        name: my-secret
+        key: id
+
+# ✅ Mount another key as a file using volume
+
+volumeMounts:
+  - name: secret-volume
+    mountPath: /etc/secret
+
+volumes:
+  - name: secret-volume
+    secret:
+      secretName: my-secret
+      items:
+        - key: password         ## use only when you want seprately mount on volume
+          path: password.txt
+
+
+# | Use Type   | Best for                                          |
+# | ---------- | ------------------------------------------------- |
+# | **env**    | small values: username, password, tokens          |
+# | **volume** | large or multi-line secrets: TLS certs, PEM files |

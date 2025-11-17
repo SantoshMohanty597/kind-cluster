@@ -33,6 +33,7 @@ spec:
         - containerPort: 80
           name: http       #### port label we have assigned we can use it kind:Service .. use in targetport
           protocol: TCP
+        - containerPort: 8080   #### For Metrics
 
       # Environment variables
       env:
@@ -57,7 +58,7 @@ spec:
       livenessProbe:
         httpGet:
           path: /
-          port: 80
+          port: 8080
         initialDelaySeconds: 10
         periodSeconds: 10
         failureThreshold: 3
@@ -65,7 +66,7 @@ spec:
       readinessProbe:
         httpGet:
           path: /
-          port: 80
+          port: 8080
         initialDelaySeconds: 5
         periodSeconds: 5
 
@@ -73,6 +74,9 @@ spec:
       volumeMounts:
         - name: html-volume       ### From the PVC 
           mountPath: /usr/share/nginx/html  ### This Path detail copied from here and pasted in PV path
+
+        - name: secret-volume
+          mountPath: /etc/secret
 
         - name: secret-volume     ### 2nd Way to assign config map or sceret
           mountPath: /etc/secret  ### in this case configmap or sceret copy the data from etcd and paste in this location.
@@ -83,6 +87,7 @@ spec:
       ports:
       - containerPort: 8080   ###Use a tool like nc or a lightweight web server and expose a port
       ### nc -lk -p 8080    ---- nc(netcat)
+      
       volumeMounts:
         - name: html-volume
           mountPath: /var/log/nginx
@@ -92,6 +97,19 @@ spec:
     - name: html-volume
       emptyDir: {}
 
+    - name: secret-volume
+      secret:
+          secretName: my-secret
+
+    - name: pv-vl
+      persistentVolumeClaim:
+        claimName: PVC-checked
+
+    - name: sidecar-vl
+      hostPath:
+        path: /var/log/nginx
+        type: DirectoryOrCreate
+       
   # Optional: Tolerations and Affinity (for scheduling rules)
   tolerations:
     - key: "env"
@@ -101,7 +119,7 @@ spec:
 
   affinity:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
+      requiredDuringSchedulingIgnoredDuringExecution: ##preferredDuringSchedulingIgnoredDuringExecution
         nodeSelectorTerms:
           - matchExpressions:
               - key: kubernetes.io/hostname
