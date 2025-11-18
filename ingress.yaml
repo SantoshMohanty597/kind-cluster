@@ -22,7 +22,14 @@ spec:
           service:
             name: webapp-service  ## Service Name
             port:
-              number: 80    ## service port
+             - number: 80    ## service port
+      - path: /app2
+        pathType: excat
+        backend:
+          Service:
+            name: 
+            port:
+              - number:
   tls:         ### Optional section for HTTPS configuration.
   - hosts:     ### List of hostnames for which TLS (HTTPS) should be enabled.
     - webapp.local

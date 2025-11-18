@@ -1,5 +1,13 @@
-## Create a separate namespace for the app
-apiVersion: v1
-kind: Namespace
+apiVersion: v1 
+kind: NameSpace 
 metadata:
-  name: dev
+    name: dv
+    labels:
+       apps: nginx 
+       env: production
+    annotation:
+       description: "Hello World"
+       owner:
+spec:         ### optional
+  finalizers:
+     - kubernetes
