@@ -5,7 +5,7 @@ metadata:
   name: webapp-rolebinding
   namespace: dev
 subjects:
-- kind: ServiceAccount          ## Binding for ServiceAccount
+  kind: ServiceAccount          ## Binding for ServiceAccount
   name: webapp-sa               ## The SA we created above
   namespace: dev
 roleRef:
