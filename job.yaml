@@ -9,7 +9,7 @@ metadata:
     description: "Performs a one-time database backup and stores it on a persistent volume"
 spec:
   completions: 1
-  parallelism: 1
+  parallelism: 1      ## Paralled Compute 
   backoffLimit: 3     ## backoffLimit defines how many times Kubernetes will retry a Job after it fails, 
                       ## before marking it as failed permanently.
   ttlSecondsAfterFinished: 3600
