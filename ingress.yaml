@@ -23,6 +23,7 @@ spec:
             name: webapp-service  ## Service Name
             port:
              - number: 80    ## service port
+             
       - path: /app2
         pathType: excat
         backend:
