@@ -75,7 +75,7 @@ spec:
         - name: html-volume       ### From the PVC 
           mountPath: /usr/share/nginx/html  ### This Path detail copied from here and pasted in PV path
 
-        - name: secret-volume
+        - name: pv-vl
           mountPath: /etc/secret
 
         - name: secret-volume     ### 2nd Way to assign config map or sceret
@@ -89,7 +89,7 @@ spec:
       ### nc -lk -p 8080    ---- nc(netcat)
       
       volumeMounts:
-        - name: html-volume
+        - name: sidecar-v1
           mountPath: /var/log/nginx
 
   # Volumes shared by containers in the Pod

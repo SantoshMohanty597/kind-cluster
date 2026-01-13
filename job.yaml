@@ -8,8 +8,8 @@ metadata:
   annotations:
     description: "Performs a one-time database backup and stores it on a persistent volume"
 spec:
-  completions: 1
-  parallelism: 1      ## Paralled Compute 
+  completions: 5      ## Pod runs are required for the Job
+  parallelism: 2      ## max 2 pod Paralled Compute and 2 doing another and last will do another
   backoffLimit: 3     ## backoffLimit defines how many times Kubernetes will retry a Job after it fails, 
                       ## before marking it as failed permanently.
   ttlSecondsAfterFinished: 3600
