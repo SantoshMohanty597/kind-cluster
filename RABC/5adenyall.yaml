@@ -1,4 +1,4 @@
-# All all traffic to pod if you lots of pods
+# Allow all traffic to pod if you lots of pods
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

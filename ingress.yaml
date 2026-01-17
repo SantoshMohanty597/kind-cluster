@@ -38,3 +38,17 @@ spec:
     
     # The Ingress Controller uses this Secret to serve HTTPS traffic.
     # Secret name, which gives your Ingress Controller the credentials it needs to handle HTTPS encryption.
+
+#   Meaning:
+
+# Requests for https://app.example.com
+
+# Use certificate stored in webapp-tls-secret
+
+## 4️⃣ Uses Kubernetes Secret for Certificate Storage
+          # The secret contains:
+
+          # tls.crt → certificate
+          # tls.key → private key
+
+          # Ingress reads this secret and serves HTTPS.

@@ -81,6 +81,14 @@ spec:
         - name: secret-volume     ### 2nd Way to assign config map or sceret
           mountPath: /etc/secret  ### in this case configmap or sceret copy the data from etcd and paste in this location.
                                   ### You can choose any path to paste
+
+        - name: fs-vol    ############################# EFS
+          mountPath: /data
+
+      volumeDevices:      ############################# BLOCK
+        - name: block-vol
+          devicePath: /dev/blockdisk
+        
     - name: sidecar-logger
       image: busybox
       command: ["sh", "-c", "tail -f /var/log/nginx/access.log"]
@@ -109,6 +117,14 @@ spec:
       hostPath:
         path: /var/log/nginx
         type: DirectoryOrCreate
+
+    - name: fs-vol    ############################# EFS
+      persistentVolumeClaim:
+      claimName: pvc-filesystem
+
+    - name: block-vol  ############################# BLOCK
+      persistentVolumeClaim:
+      claimName: pvc-block
        
   # Optional: Tolerations and Affinity (for scheduling rules)
   tolerations:

@@ -9,3 +9,37 @@ spec:
   resources:
     requests:
       storage: 10Gi                        # Claiming 10 GB
+... 
+
+## FILESYSTEM
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-filesystem
+spec:
+
+  storageClassName: pv-filesytem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+
+... 
+
+## EBS
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-block
+spec:
+  volumeMode: Block
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ebs-sc
+  resources:
+    requests:
+      storage: 10Gi

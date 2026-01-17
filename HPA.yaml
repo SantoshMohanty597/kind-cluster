@@ -21,3 +21,44 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50   # target CPU utilization %
+# Requests per pod
+# Messages processed per pod
+# Errors per pod
+
+# Production usage
+# ✔ APIs
+# ✔ Microservices
+# ✔ High traffic systems
+# ✔ Better than CPU scaling
+# ➡ Requires Prometheus Adapter
+    - type: Pods
+      pods:
+        metric:
+          name: http_requests_per_second
+        target:
+          type: AverageValue
+          averageValue: "100"
+
+    - type: Object
+      object:
+        metric:
+          name: requests_per_second
+        describedObject:
+          apiVersion: networking.k8s.io/v1
+          kind: Ingress
+          name: nginx-ingress
+        target:
+          type: Value
+          value: "1000"
+          
+    - type: External
+      external:
+        metric:
+          name: sqs_queue_depth
+        target:
+          type: AverageValue
+          averageValue: "50"
+
+
+
+

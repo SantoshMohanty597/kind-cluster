@@ -24,6 +24,7 @@ spec:
       - name: backup-container
         image: busybox:latest
         command: ["sh", "-c", "echo Starting backup... && echo 'Backup data' > /backup/db-backup.txt && sleep 10 && echo Backup complete!"]
+        
         volumeMounts:
         - name: backup-storage
           mountPath: /backup                # Mount path inside container

@@ -9,3 +9,7 @@ spec:
   policyTypes:
   - Ingress                        ## Block all incoming traffic
   - Egress                         ## Block all outgoing traffic
+
+
+
+
