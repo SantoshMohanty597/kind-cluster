@@ -1,0 +1,39 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod        # 👈 This name is referenced in issuerRef
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: devops@example.com
+    privateKeySecretRef:
+      name: letsencrypt-prod-key
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+
+
+
+# ACME = protocol used by Let’s Encrypt to issue certificates
+
+# privateKeySecretRef:
+# name: letsencrypt-prod-key
+# Kubernetes Secret name where ACME account private key is stored
+# cert-manager creates and manages it
+
+# solvers:
+# What it is
+# Defines how domain ownership is verified
+
+# - http01:
+# What it is
+# HTTP-01 challenge type
+
+
+# ingress:
+# What it is
+# Tells cert-manager to use Kubernetes Ingress for the challenge
+# class: nginx
+# class: alb
+# class: traefik

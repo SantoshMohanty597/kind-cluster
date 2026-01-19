@@ -2,6 +2,27 @@
 ### Learn Bottelneck -cpu , memory 
 ### Load-gentrater to test the system
 
+
+# 🔑 RULE #1 (HARD RULE)
+# 👉 ONE workload (Deployment / StatefulSet) = ONE HPA
+# Kubernetes does NOT allow:
+# Multiple HPAs scaling the same Deployment
+
+# ❌ This will conflict
+# ❌ One HPA will overwrite the other
+
+
+# 🔑 RULE #2 (MOST IMPORTANT)
+# 👉 ONE HPA can contain MULTIPLE metric TYPES
+# You can mix:
+# Resource
+# Pods
+# Object (Ingress / Service)
+# External
+# ALL inside the SAME HPA YAML
+
+
+
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -14,6 +35,7 @@ spec:
     name: nginx-deployment   # Target deployment name
   minReplicas: 2
   maxReplicas: 10
+
   metrics:
     - type: Resource
       resource:
@@ -21,6 +43,14 @@ spec:
         target:
           type: Utilization
           averageUtilization: 50   # target CPU utilization %
+
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 75
+
 # Requests per pod
 # Messages processed per pod
 # Errors per pod
@@ -58,6 +88,7 @@ spec:
         target:
           type: AverageValue
           averageValue: "50"
+          
 
 
 
