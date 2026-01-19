@@ -1,13 +1,19 @@
-apiVersion: v1 
-kind: NameSpace 
+# -------------------------------
+# Kubernetes Namespace (Production)
+# -------------------------------
+apiVersion: v1
+kind: Namespace
 metadata:
-    name: dv
-    labels:
-       apps: nginx 
-       env: production
-    annotation:
-       description: "Hello World"
-       owner:
+  name: production                 # Namespace name (env-based)
+  labels:
+    environment: production        # Used for env-based filtering
+    team: devops                   # Ownership tracking
+    cost-center: fintech-core      # Cost allocation (FinOps)
+    compliance: pci-dss            # Compliance tagging
+  annotations:
+    owner: devops-team@company.com # Team contact
+    purpose: "Production workloads"
+
 spec:         ### optional
   finalizers:
      - kubernetes

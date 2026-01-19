@@ -1,0 +1,27 @@
+# 📌 Real-world reason
+
+# Prevents one team from killing the whole cluster
+# Mandatory in production clusters
+# Interview keyword: “blast radius control”
+
+
+# --------------------------------
+# ResourceQuota (Production Safety)
+# --------------------------------
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: production-quota
+  namespace: production
+spec:
+  hard:
+    requests.cpu: "20"             # Total requested CPU
+    requests.memory: 40Gi          # Total requested Memory
+    limits.cpu: "40"               # Total CPU limit
+    limits.memory: 80Gi            # Total Memory limit
+
+    pods: "100"                    # Max pods allowed
+    services: "50"                 # Max services
+    configmaps: "100"
+    secrets: "100"
+    persistentvolumeclaims: "50"

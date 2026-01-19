@@ -1,0 +1,23 @@
+# -----------------------------------
+# LimitRange (Default Pod Constraints)
+# -----------------------------------
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: production-limits
+  namespace: production
+spec:
+  limits:
+    - type: Container
+      default:
+        cpu: "500m"                # Default CPU limit
+        memory: "512Mi"            # Default memory limit
+      defaultRequest:
+        cpu: "250m"                # Default CPU request
+        memory: "256Mi"            # Default memory request
+      max:
+        cpu: "2"                   # Max CPU per container
+        memory: "4Gi"              # Max memory per container
+      min:
+        cpu: "100m"                # Min CPU
+        memory: "128Mi"            # Min memory

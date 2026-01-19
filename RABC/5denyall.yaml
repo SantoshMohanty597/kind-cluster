@@ -1,3 +1,11 @@
+# ✅ 4️⃣ Default NetworkPolicy (Zero Trust – Mandatory)
+
+# 📌 This is CRITICAL in production
+# By default → NO pod can talk to anything
+# You must explicitly allow traffic
+# Interview keyword: “Zero Trust Networking”
+
+
 ## Default Deny All Policy
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -11,5 +19,31 @@ spec:
   - Egress                         ## Block all outgoing traffic
 
 
+
+...
+## ✅ (Optional but REAL) Allow DNS Access
+
+# -------------------------------------
+# NetworkPolicy (Allow DNS)
+# -------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: production
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
 
 
