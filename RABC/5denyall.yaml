@@ -18,32 +18,11 @@ spec:
   - Ingress                        ## Block all incoming traffic
   - Egress                         ## Block all outgoing traffic
 
+  ingress: []   # Explicit deny   ### optional if want to add .. without add also deny all work
+  egress: []    # Explicit deny   ### optional if want to add .. without add also deny all work
 
 
-...
-## ✅ (Optional but REAL) Allow DNS Access
 
-# -------------------------------------
-# NetworkPolicy (Allow DNS)
-# -------------------------------------
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-dns
-  namespace: production
-spec:
-  podSelector: {}
-  policyTypes:
-    - Egress
-  egress:
-    - to:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: kube-system
-      ports:
-        - protocol: UDP
-          port: 53
-        - protocol: TCP
-          port: 53
+
 
 

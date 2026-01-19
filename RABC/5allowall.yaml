@@ -1,5 +1,24 @@
 # Allow all traffic to pod if you lots of pods
 
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name:
+  namespace:
+spec:
+  podSelector: {}  ## Pod 
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+    - from: [] # allow all
+  egress: 
+    - to: {} # allow all 
+
+
+...
+
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -8,7 +27,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: frontend
+      app: frontend   ##### Specfic Pod
   policyTypes:
   - Ingress
   - Egress
