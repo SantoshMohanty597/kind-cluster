@@ -1,3 +1,12 @@
+
+# 📌 Why production needs this
+
+# Stops developers from deploying:
+# ❌ No resource requests
+# ❌ 50Gi memory containers
+# Ensures scheduler stability
+
+
 # -----------------------------------
 # LimitRange (Default Pod Constraints)
 # -----------------------------------
