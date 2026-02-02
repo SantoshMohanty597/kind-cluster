@@ -30,3 +30,17 @@ spec:
       min:
         cpu: "100m"                # Min CPU
         memory: "128Mi"            # Min memory
+
+    # 2️⃣ POD LEVEL (total of all containers)
+    - type: Pod
+      max:
+        cpu: "4"
+        memory: "4Gi"
+
+
+    # 3️⃣ PVC LEVEL (storage control)
+    - type: PersistentVolumeClaim
+      min:
+        storage: "1Gi"
+      max:
+        storage: "100Gi"

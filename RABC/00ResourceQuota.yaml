@@ -11,17 +11,68 @@
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: production-quota
+  name: staging-resources-quote
+  namespace: staging
+spec:
+  hard:
+    requests.cpu: "4"             # Total requested CPU
+    requests.memory: 8Gi          # Total requested Memory
+    limits.cpu: "8"               # Total CPU limit
+    limits.memory: 16Gi            # Total Memory limit
+
+    # --- Pods ---
+    pods: "30"
+
+    # --- Services ---
+    services: "10"
+    services.loadbalancers: "2"
+    services.nodeports: "2"
+
+
+    # --- Storage ---
+    persistentvolumeclaims: "10"
+    requests.storage: 100Gi
+
+
+    # --- Objects ---
+    configmaps: "50"
+    secrets: "50"
+
+
+...
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: production-resource-quota
   namespace: production
 spec:
   hard:
-    requests.cpu: "20"             # Total requested CPU
-    requests.memory: 40Gi          # Total requested Memory
-    limits.cpu: "40"               # Total CPU limit
-    limits.memory: 80Gi            # Total Memory limit
+    # --- Compute ---
+    requests.cpu: "20"
+    requests.memory: 40Gi
+    limits.cpu: "40"
+    limits.memory: 80Gi
 
-    pods: "100"                    # Max pods allowed
-    services: "50"                 # Max services
-    configmaps: "100"
-    secrets: "100"
-    persistentvolumeclaims: "50"
+    # --- Pods ---
+    pods: "100"
+
+
+    # 10 ClusterIP
+    # 5 NodePort
+    # 5 LoadBalancer
+    # ----------------
+    # Total = 20 services
+
+    # --- Services ---
+    services: "20"
+    services.loadbalancers: "5"
+    services.nodeports: "5"
+
+    # --- Storage ---
+    persistentvolumeclaims: "30"
+    requests.storage: 500Gi
+
+    # --- Objects ---
+    configmaps: "200"
+    secrets: "200"
