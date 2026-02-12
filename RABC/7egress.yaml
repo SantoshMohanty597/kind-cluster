@@ -17,3 +17,30 @@ spec:
     ports:
     - protocol: TCP
       port: 3306                   ## MySQL port
+
+  - to:
+    - podSelector:
+        matchLabels:
+          app: mysql
+    ports:
+    - protocol: TCP
+      port: 3306
+
+  - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system  # 👉 Allow traffic to all pods inside kube-system namespace
+    ports:
+      - protocol: UDP
+        port: 53
+      - protocol: TCP
+        port: 53
+
+  - to:                                     #### NAMESPACE + PODSELECTOR
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+
