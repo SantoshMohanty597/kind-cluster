@@ -88,8 +88,82 @@ spec:
         target:
           type: AverageValue
           averageValue: "50"
-          
 
+      behavior:                         # Optional but recommended in production
+        scaleUp:
+          stabilizationWindowSeconds: 60   # Prevent rapid scaling
+          policies:
+          - type: Percent
+            value: 100                     # Can double pods in one scaling event
+            periodSeconds: 30
+          selectPolicy: Max   # If multiple policies exist, choose the largest
+        scaleDown:
+          stabilizationWindowSeconds: 300  # Wait before scaling down
+          policies:
+          - type: Percent
+            value: 50                      # Reduce pods gradually
+            periodSeconds: 60              # This scaling rule can be applied every 30 seconds
+          selectPolicy: Max   # If multiple policies exist, choose the largest
+            
+
+
+
+###>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ***************************************************************
+# ***************************************************************
+# ***************************************************************
+
+
+
+# We can Use both Behaviour (Percentage vs Pod) in deployment.yaml but it recomaned to use pod for statefull.yaml
+
+...
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mysql-hpa                          # HPA name
+  namespace: production                    # Namespace
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet                      # Target is StatefulSet
+    name: mysql                            # StatefulSet name
+
+  minReplicas: 3                           # Maintain minimum quorum
+  maxReplicas: 9                           # Maximum replicas allowed
+
+  metrics:
+  - type: Resource                         # Scaling based on resource
+    resource:
+      name: cpu                            # CPU metric
+      target:
+        type: Utilization
+        averageUtilization: 65             # Scale if avg CPU > 65%
+
+  behavior:
+
+    # ----------------------
+    # Scale UP behavior
+    # ----------------------
+    scaleUp:
+      stabilizationWindowSeconds: 120      # Wait 2 mins before scaling up again
+      policies:
+      - type: Pods
+        value: 1                           # Add only 1 pod at a time
+        periodSeconds: 60                  # Every 60 seconds
+      selectPolicy: Max                    # Use most permissive policy
+
+    # ----------------------
+    # Scale DOWN behavior
+    # ----------------------
+    scaleDown:
+      stabilizationWindowSeconds: 600      # Wait 10 mins before scaling down
+      policies:
+      - type: Pods
+        value: 1                           # Remove only 1 pod at a time
+        periodSeconds: 120                 # Every 2 minutes
+      selectPolicy: Max
 
 
 
